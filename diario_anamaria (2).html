@@ -1,0 +1,1375 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Diario de Ana María · Sistema de Transformación</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Cinzel:wght@400;600&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --ink: #1a0f2e;
+  --deep: #2d1b4e;
+  --purple: #5b3a8a;
+  --violet: #8b5cf6;
+  --mist: #c4b0e0;
+  --cream: #faf6f0;
+  --gold: #c9a84c;
+  --gold-light: #e8d5a3;
+  --stone: #6b5b73;
+  --parchment: #f5f0e8;
+  --white: #ffffff;
+  --green: #3a6b4a;
+  --green-light: #eaf2ec;
+  --blue: #2a4a7a;
+  --blue-light: #e8eef8;
+  --rose: #7a3a4a;
+  --amber: #8a6020;
+  --amber-light: #fdf5e4;
+}
+
+html, body {
+  min-height: 100vh;
+  background: var(--cream);
+  font-family: 'Jost', sans-serif;
+  color: var(--ink);
+  padding: 40px 20px 80px;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 70% 50% at 15% 10%, rgba(139,92,246,0.05) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 70% at 90% 85%, rgba(201,168,76,0.06) 0%, transparent 60%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.page { position: relative; z-index: 1; max-width: 780px; margin: 0 auto; }
+
+/* ── CORONA ── */
+.crown { text-align: center; margin-bottom: 20px; animation: fadeDown 0.9s ease both; }
+.crown-line { display: flex; align-items: center; justify-content: center; gap: 16px; margin-bottom: 14px; }
+.crown-rule { flex: 1; height: 1px; background: linear-gradient(to right, transparent, var(--gold), transparent); max-width: 140px; }
+.crown-diamond { width: 6px; height: 6px; background: var(--gold); transform: rotate(45deg); }
+.eyebrow { font-family: 'Cinzel', serif; font-size: 10px; letter-spacing: 4px; color: var(--gold); text-transform: uppercase; margin-bottom: 10px; }
+.main-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(28px, 5vw, 44px); font-weight: 300; color: var(--deep); line-height: 1.2; }
+.main-title em { font-style: italic; color: var(--purple); }
+.subtitle { font-family: 'Jost', sans-serif; font-size: 12px; font-weight: 300; letter-spacing: 2px; color: var(--stone); margin-top: 8px; text-transform: uppercase; }
+
+/* ── NAVEGACIÓN DE FECHAS ── */
+.date-nav {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--deep);
+  border-radius: 3px;
+  padding: 14px 20px;
+  margin: 24px 0 16px;
+  animation: fadeUp 0.9s ease 0.1s both;
+}
+.date-nav-btn {
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(232,213,163,0.2);
+  color: var(--gold-light);
+  font-family: 'Cinzel', serif;
+  font-size: 11px;
+  letter-spacing: 1px;
+  padding: 6px 14px;
+  border-radius: 2px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+.date-nav-btn:hover { background: rgba(201,168,76,0.15); border-color: rgba(201,168,76,0.4); }
+.date-nav-btn.active { background: rgba(201,168,76,0.2); border-color: var(--gold); }
+.date-display {
+  flex: 1;
+  text-align: center;
+  font-family: 'Cinzel', serif;
+  font-size: 13px;
+  letter-spacing: 2px;
+  color: var(--gold-light);
+}
+.date-input-wrap { display: flex; align-items: center; gap: 8px; }
+.date-input-wrap input[type="date"] {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(232,213,163,0.25);
+  color: var(--gold-light);
+  font-family: 'Jost', sans-serif;
+  font-size: 12px;
+  padding: 5px 10px;
+  border-radius: 2px;
+  outline: none;
+  cursor: pointer;
+  color-scheme: dark;
+}
+
+/* ── BARRA DE PROGRESO ── */
+.progress-block {
+  background: var(--white);
+  border: 1px solid rgba(196,176,224,0.25);
+  border-radius: 3px;
+  padding: 20px 24px;
+  margin-bottom: 28px;
+  animation: fadeUp 0.9s ease 0.15s both;
+}
+.progress-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 14px;
+}
+.progress-label {
+  font-family: 'Cinzel', serif;
+  font-size: 10px;
+  letter-spacing: 3px;
+  color: var(--purple);
+  text-transform: uppercase;
+}
+.progress-counter {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--deep);
+}
+.progress-counter span { font-size: 14px; font-weight: 300; color: var(--stone); }
+.progress-track {
+  width: 100%;
+  height: 8px;
+  background: var(--parchment);
+  border-radius: 4px;
+  overflow: hidden;
+  position: relative;
+}
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(to right, var(--purple), var(--gold));
+  border-radius: 4px;
+  transition: width 0.6s ease;
+  position: relative;
+}
+.progress-fill::after {
+  content: '';
+  position: absolute;
+  right: 0; top: 0; bottom: 0;
+  width: 16px;
+  background: rgba(255,255,255,0.3);
+  border-radius: 0 4px 4px 0;
+}
+.progress-milestones {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 8px;
+}
+.milestone {
+  font-family: 'Jost', sans-serif;
+  font-size: 10px;
+  color: var(--mist);
+  letter-spacing: 0.5px;
+}
+.milestone.reached { color: var(--gold); font-weight: 500; }
+
+/* ── META BAR ── */
+.meta-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px 20px;
+  background: rgba(45,27,78,0.06);
+  border: 1px solid rgba(196,176,224,0.2);
+  border-radius: 3px;
+  padding: 12px 20px;
+  margin-bottom: 32px;
+  animation: fadeUp 0.9s ease 0.2s both;
+}
+.meta-bar-item {
+  font-family: 'Jost', sans-serif;
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 1px;
+  color: var(--stone);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.meta-bar-item strong { color: var(--purple); font-weight: 500; }
+.meta-sep { color: var(--mist); font-size: 14px; }
+.emotional-dots { display: flex; gap: 4px; }
+.dot {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  border: 1.5px solid var(--mist);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.dot.filled { border-color: var(--purple); background: var(--purple); }
+.dot:hover { border-color: var(--violet); transform: scale(1.2); }
+
+/* ── SECCIONES ── */
+.section { margin-bottom: 32px; animation: fadeUp 0.9s ease both; }
+.section:nth-child(4) { animation-delay: 0.25s; }
+.section:nth-child(5) { animation-delay: 0.3s; }
+.section:nth-child(6) { animation-delay: 0.35s; }
+.section:nth-child(7) { animation-delay: 0.4s; }
+.section:nth-child(8) { animation-delay: 0.45s; }
+
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+.section-icon { font-size: 18px; flex-shrink: 0; }
+.section-title { font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 3px; color: var(--purple); text-transform: uppercase; }
+.section-time { font-family: 'Jost', sans-serif; font-size: 10px; font-weight: 300; letter-spacing: 1px; color: var(--mist); white-space: nowrap; margin-left: auto; }
+.section-rule { flex: 1; height: 1px; background: linear-gradient(to right, var(--mist), transparent); }
+
+/* ── ÍTEMS ── */
+.items { display: flex; flex-direction: column; gap: 8px; }
+
+.item {
+  background: var(--white);
+  border: 1px solid rgba(196,176,224,0.25);
+  border-radius: 3px;
+  overflow: hidden;
+  transition: box-shadow 0.25s ease;
+  position: relative;
+}
+.item::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 3px;
+  background: var(--item-color, var(--purple));
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+.item.checked::before { opacity: 1; }
+.item.has-note::before { opacity: 0.4; }
+.item:hover { box-shadow: 0 4px 16px rgba(91,58,138,0.07); }
+
+.item-main {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px 16px 14px 16px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.checkbox {
+  width: 20px; height: 20px;
+  border: 1.5px solid var(--item-color, var(--purple));
+  border-radius: 2px;
+  flex-shrink: 0;
+  margin-top: 1px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+.item.checked .checkbox { background: var(--gold); border-color: var(--gold); }
+.item.checked .checkbox::after { content: '✓'; font-size: 12px; color: white; font-weight: 600; }
+
+.item-content { flex: 1; min-width: 0; }
+.item-label { font-family: 'Jost', sans-serif; font-size: 14px; font-weight: 500; color: var(--deep); margin-bottom: 2px; transition: all 0.2s ease; }
+.item.checked .item-label { text-decoration: line-through; color: var(--stone); opacity: 0.6; }
+.item-detail { font-family: 'Cormorant Garamond', serif; font-size: 14px; font-style: italic; color: var(--stone); line-height: 1.5; }
+
+.item-right { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+
+.item-tag {
+  font-family: 'Cinzel', serif;
+  font-size: 9px;
+  letter-spacing: 1.5px;
+  padding: 3px 9px;
+  border-radius: 2px;
+  white-space: nowrap;
+}
+.tag-espiritual { background: var(--green-light); color: var(--green); }
+.tag-emocional  { background: #f3e5f5; color: #6a1b9a; }
+.tag-mental     { background: var(--blue-light); color: var(--blue); }
+.tag-estrategico{ background: var(--amber-light); color: var(--amber); }
+.tag-trilogia   { background: #fff3e0; color: #bf6000; }
+
+/* Colores de borde por tipo */
+.item.espiritual  { --item-color: #3a6b4a; }
+.item.emocional   { --item-color: #8b5cf6; }
+.item.mental      { --item-color: #2a4a7a; }
+.item.estrategico { --item-color: #c9a84c; }
+.item.trilogia    { --item-color: #c9a84c; background: linear-gradient(135deg, #fffbf0, #fff8e4); }
+.item.trilogia .item-label { color: var(--amber); }
+
+/* ── BOTÓN + ESCRIBIR ── */
+.write-btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-family: 'Cinzel', serif;
+  font-size: 9px;
+  letter-spacing: 1.5px;
+  color: var(--mist);
+  background: none;
+  border: 1px solid rgba(196,176,224,0.3);
+  border-radius: 2px;
+  padding: 3px 9px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+.write-btn:hover { color: var(--purple); border-color: var(--mist); }
+.write-btn.open { color: var(--purple); border-color: var(--purple); background: rgba(91,58,138,0.04); }
+.write-btn .note-dot {
+  width: 5px; height: 5px;
+  background: var(--gold);
+  border-radius: 50%;
+  display: none;
+}
+.write-btn.has-content .note-dot { display: block; }
+
+/* ── ÁREA EXPANDIBLE ── */
+.expand-area {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.35s ease, padding 0.35s ease;
+  border-top: 0px solid rgba(196,176,224,0.2);
+}
+.expand-area.open {
+  max-height: 300px;
+  border-top-width: 1px;
+  padding: 14px 16px 14px 52px;
+}
+.expand-area textarea {
+  width: 100%;
+  min-height: 72px;
+  background: var(--parchment);
+  border: 1px solid rgba(196,176,224,0.2);
+  border-radius: 2px;
+  padding: 12px 14px;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 15px;
+  color: var(--deep);
+  resize: vertical;
+  outline: none;
+  transition: border-color 0.2s ease;
+  line-height: 1.65;
+}
+.expand-area textarea:focus { border-color: var(--mist); }
+.expand-area textarea::placeholder { color: rgba(107,91,115,0.35); font-style: italic; }
+.expand-area .char-count {
+  font-family: 'Jost', sans-serif;
+  font-size: 10px;
+  color: var(--mist);
+  text-align: right;
+  margin-top: 4px;
+}
+
+/* ── CAMPOS PODEROSOS FINALES ── */
+.gold-divider {
+  display: flex; align-items: center; gap: 16px;
+  margin: 40px 0 28px;
+}
+.gold-divider span { flex: 1; height: 1px; background: linear-gradient(to right, transparent, rgba(201,168,76,0.4), transparent); }
+.gold-divider .d { width: 5px; height: 5px; background: var(--gold); transform: rotate(45deg); opacity: 0.6; }
+
+.writing-section { animation: fadeUp 0.9s ease 0.5s both; }
+.writing-block { margin-bottom: 28px; }
+.writing-label {
+  font-family: 'Cinzel', serif; font-size: 10px; letter-spacing: 3px;
+  color: var(--purple); text-transform: uppercase; margin-bottom: 10px;
+  display: flex; align-items: center; gap: 10px;
+}
+.writing-label.gold-label { color: var(--amber); }
+.writing-label::after { content: ''; flex: 1; height: 1px; background: linear-gradient(to right, rgba(196,176,224,0.5), transparent); }
+.writing-prompt { font-family: 'Cormorant Garamond', serif; font-size: 15px; font-style: italic; color: var(--stone); margin-bottom: 10px; line-height: 1.6; }
+.writing-area {
+  width: 100%; min-height: 80px;
+  background: var(--white); border: 1px solid rgba(196,176,224,0.3);
+  border-radius: 3px; padding: 14px 16px;
+  font-family: 'Cormorant Garamond', serif; font-size: 16px;
+  color: var(--deep); resize: vertical; outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s; line-height: 1.65;
+}
+.writing-area:focus { border-color: var(--mist); box-shadow: 0 0 0 3px rgba(196,176,224,0.12); }
+.writing-area::placeholder { color: rgba(107,91,115,0.3); font-style: italic; }
+.writing-area.gold-area { border-color: rgba(201,168,76,0.25); }
+.writing-area.gold-area:focus { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(201,168,76,0.1); }
+
+.trilogy-checkboxes { display: flex; gap: 20px; flex-wrap: wrap; margin: 10px 0; }
+.trilogy-option { display: flex; align-items: center; gap: 8px; cursor: pointer; }
+.trilogy-option input[type="checkbox"] { display: none; }
+.trilogy-box {
+  width: 16px; height: 16px;
+  border: 1.5px solid var(--gold); border-radius: 2px;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.2s ease;
+}
+.trilogy-option input:checked + .trilogy-box { background: var(--gold); }
+.trilogy-option input:checked + .trilogy-box::after { content: '✓'; font-size: 10px; color: white; font-weight: 600; }
+.trilogy-name { font-family: 'Cormorant Garamond', serif; font-size: 14px; font-style: italic; color: var(--amber); }
+
+/* ── EXPORTAR ── */
+.export-section {
+  margin-top: 48px;
+  animation: fadeUp 0.9s ease 0.6s both;
+}
+.export-header {
+  font-family: 'Cinzel', serif; font-size: 10px; letter-spacing: 4px;
+  color: var(--mist); text-transform: uppercase; text-align: center;
+  margin-bottom: 20px; display: flex; align-items: center; gap: 16px;
+}
+.export-header::before, .export-header::after { content: ''; flex: 1; height: 1px; background: linear-gradient(to right, transparent, var(--mist), transparent); }
+.export-btns { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
+.export-btn {
+  font-family: 'Cinzel', serif; font-size: 10px; letter-spacing: 2px;
+  color: var(--deep); background: var(--white);
+  border: 1px solid rgba(196,176,224,0.4);
+  border-radius: 2px; padding: 10px 20px;
+  cursor: pointer; transition: all 0.2s ease; text-transform: uppercase;
+  display: flex; align-items: center; gap: 8px;
+}
+.export-btn:hover { border-color: var(--purple); color: var(--purple); background: rgba(91,58,138,0.03); }
+.export-btn.primary { background: var(--deep); color: var(--gold-light); border-color: var(--deep); }
+.export-btn.primary:hover { background: var(--purple); }
+
+/* ── CIERRE ── */
+.closing-bar { margin-top: 52px; text-align: center; animation: fadeUp 0.9s ease 0.65s both; }
+.closing-rule { display: flex; align-items: center; gap: 16px; margin-bottom: 28px; }
+.closing-rule span { flex: 1; height: 1px; background: linear-gradient(to right, transparent, var(--mist), transparent); }
+.closing-diamonds { color: var(--gold); font-size: 10px; letter-spacing: 6px; }
+.affirmation { font-family: 'Cormorant Garamond', serif; font-size: clamp(16px,2.5vw,20px); font-style: italic; font-weight: 300; color: var(--purple); line-height: 1.75; max-width: 500px; margin: 0 auto 16px; }
+.signature { font-family: 'Cinzel', serif; font-size: 10px; letter-spacing: 3px; color: var(--mist); text-transform: uppercase; }
+
+/* ── TOAST ── */
+.toast {
+  position: fixed; bottom: 30px; right: 30px;
+  background: var(--deep); color: var(--gold-light);
+  font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 1.5px;
+  padding: 12px 20px; border-radius: 3px;
+  opacity: 0; transform: translateY(10px);
+  transition: all 0.3s ease; pointer-events: none; z-index: 100;
+  border-left: 3px solid var(--gold);
+}
+.toast.show { opacity: 1; transform: translateY(0); }
+
+@keyframes fadeDown { from { opacity:0; transform:translateY(-18px); } to { opacity:1; transform:translateY(0); } }
+@keyframes fadeUp   { from { opacity:0; transform:translateY(18px);  } to { opacity:1; transform:translateY(0); } }
+
+@media (max-width: 520px) {
+  .item-tag { display: none; }
+  .export-btns { flex-direction: column; align-items: stretch; }
+  .export-btn { justify-content: center; }
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- CORONA -->
+  <div class="crown">
+    <div class="crown-line"><div class="crown-rule"></div><div class="crown-diamond"></div><div class="crown-rule"></div></div>
+    <div class="eyebrow">Diario de transformación · Ana María</div>
+    <h1 class="main-title">Vivo como <em>Ana María</em></h1>
+    <div class="subtitle">Mujer estable · estratégica · espiritualmente alineada</div>
+  </div>
+
+  <!-- NAVEGACIÓN DE FECHAS -->
+  <div class="date-nav">
+    <button class="date-nav-btn" onclick="goToDate(-1)">← Ayer</button>
+    <div class="date-display" id="dateDisplay">—</div>
+    <div class="date-input-wrap">
+      <input type="date" id="datePicker" onchange="loadDate(this.value)" />
+    </div>
+    <button class="date-nav-btn active" onclick="goToDate(0)">Hoy</button>
+    <button class="date-nav-btn" onclick="goToDate(1)">Mañana →</button>
+  </div>
+
+  <!-- PROGRESO -->
+  <div class="progress-block">
+    <div class="progress-header">
+      <div class="progress-label">Progreso · Meta 90 días</div>
+      <div class="progress-counter"><span id="daysCount">0</span> <span>días completados / 90</span></div>
+    </div>
+    <div class="progress-track">
+      <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+    </div>
+    <div class="progress-milestones">
+      <span class="milestone" id="m0">Inicio</span>
+      <span class="milestone" id="m30">30 días</span>
+      <span class="milestone" id="m60">60 días</span>
+      <span class="milestone" id="m90">🌿 Meta</span>
+    </div>
+  </div>
+
+  <!-- META BAR -->
+  <div class="meta-bar">
+    <div class="meta-bar-item">
+      Estado emocional:
+      <div class="emotional-dots" id="emotionalDots"></div>
+      <strong id="emotionalScore">—</strong>
+    </div>
+    <div class="meta-sep">·</div>
+    <div class="meta-bar-item">Ítems completados: <strong id="completedCount">0 / 13</strong></div>
+    <div class="meta-sep">·</div>
+    <div class="meta-bar-item">25 de mayo de 2026</div>
+  </div>
+
+  <!-- ══ MAÑANA ══ -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-icon">🌅</span>
+      <span class="section-title">Ritual de mañana</span>
+      <div class="section-rule"></div>
+      <span class="section-time">10 – 15 min</span>
+    </div>
+    <div class="items">
+      <div class="item espiritual" id="item-devocional">
+        <div class="item-main" onclick="toggleCheck('devocional')">
+          <div class="checkbox"></div>
+          <div class="item-content">
+            <div class="item-label">Oración / devocional</div>
+            <div class="item-detail">5–10 min al despertar, antes del teléfono</div>
+          </div>
+          <div class="item-right">
+            <div class="item-tag tag-espiritual">🌿 Espiritual</div>
+            <button class="write-btn" onclick="toggleExpand(event,'devocional')" id="btn-devocional">+ escribir <span class="note-dot"></span></button>
+          </div>
+        </div>
+        <div class="expand-area" id="exp-devocional">
+          <textarea placeholder="¿Qué te dijo Dios hoy en la oración? ¿Qué recibiste?" data-key="devocional" oninput="saveNote(this)"></textarea>
+          <div class="char-count" id="cc-devocional">0 caracteres</div>
+        </div>
+      </div>
+
+      <div class="item emocional" id="item-intencion">
+        <div class="item-main" onclick="toggleCheck('intencion')">
+          <div class="checkbox"></div>
+          <div class="item-content">
+            <div class="item-label">Intención del día</div>
+            <div class="item-detail">¿Quién elijo ser hoy? Escríbelo en 1 frase</div>
+          </div>
+          <div class="item-right">
+            <div class="item-tag tag-emocional">💜 Emocional</div>
+            <button class="write-btn" onclick="toggleExpand(event,'intencion')" id="btn-intencion">+ escribir <span class="note-dot"></span></button>
+          </div>
+        </div>
+        <div class="expand-area" id="exp-intencion">
+          <textarea placeholder="Hoy elijo ser una mujer que..." data-key="intencion" oninput="saveNote(this)"></textarea>
+          <div class="char-count" id="cc-intencion">0 caracteres</div>
+        </div>
+      </div>
+
+      <div class="item emocional" id="item-checkin">
+        <div class="item-main" onclick="toggleCheck('checkin')">
+          <div class="checkbox"></div>
+          <div class="item-content">
+            <div class="item-label">Check-in emocional</div>
+            <div class="item-detail">¿Cómo llego hoy? Escala 1–10 y nombra la emoción</div>
+          </div>
+          <div class="item-right">
+            <div class="item-tag tag-emocional">💜 Emocional</div>
+            <button class="write-btn" onclick="toggleExpand(event,'checkin')" id="btn-checkin">+ escribir <span class="note-dot"></span></button>
+          </div>
+        </div>
+        <div class="expand-area" id="exp-checkin">
+          <textarea placeholder="Emoción principal: ___  Intensidad: ___/10. Lo que noto en mi cuerpo y mente al llegar a este día es..." data-key="checkin" oninput="saveNote(this)"></textarea>
+          <div class="char-count" id="cc-checkin">0 caracteres</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ DURANTE EL DÍA ══ -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-icon">☀️</span>
+      <span class="section-title">Durante el día</span>
+      <div class="section-rule"></div>
+      <span class="section-time">10 – 15 min acumulados</span>
+    </div>
+    <div class="items">
+      <div class="item emocional" id="item-regulacion">
+        <div class="item-main" onclick="toggleCheck('regulacion')">
+          <div class="checkbox"></div>
+          <div class="item-content">
+            <div class="item-label">Pausa de regulación</div>
+            <div class="item-detail">Antes de responder si hay tensión: respira 4-4-4</div>
+          </div>
+          <div class="item-right">
+            <div class="item-tag tag-emocional">💜 Emocional</div>
+            <button class="write-btn" onclick="toggleExpand(event,'regulacion')" id="btn-regulacion">+ escribir <span class="note-dot"></span></button>
+          </div>
+        </div>
+        <div class="expand-area" id="exp-regulacion">
+          <textarea placeholder="¿En qué momento activé la pausa? ¿Qué sentí antes y después?" data-key="regulacion" oninput="saveNote(this)"></textarea>
+          <div class="char-count" id="cc-regulacion">0 caracteres</div>
+        </div>
+      </div>
+
+      <div class="item espiritual" id="item-sanacion">
+        <div class="item-main" onclick="toggleCheck('sanacion')">
+          <div class="checkbox"></div>
+          <div class="item-content">
+            <div class="item-label">Espacio de sanación quirúrgica con Dios</div>
+            <div class="item-detail">Si se activó un patrón: activa el protocolo sagrado</div>
+          </div>
+          <div class="item-right">
+            <div class="item-tag tag-espiritual">🌿 Espiritual</div>
+            <button class="write-btn" onclick="toggleExpand(event,'sanacion')" id="btn-sanacion">+ escribir <span class="note-dot"></span></button>
+          </div>
+        </div>
+        <div class="expand-area" id="exp-sanacion">
+          <textarea placeholder="¿Qué patrón se activó? ¿Qué herida tocó? ¿Qué hizo Dios en ese espacio?" data-key="sanacion" oninput="saveNote(this)"></textarea>
+          <div class="char-count" id="cc-sanacion">0 caracteres</div>
+        </div>
+      </div>
+
+      <div class="item mental" id="item-limite">
+        <div class="item-main" onclick="toggleCheck('limite')">
+          <div class="checkbox"></div>
+          <div class="item-content">
+            <div class="item-label">Límite sostenido</div>
+            <div class="item-detail">1 momento donde actué con calma, no con culpa</div>
+          </div>
+          <div class="item-right">
+            <div class="item-tag tag-mental">🧠 Mental</div>
+            <button class="write-btn" onclick="toggleExpand(event,'limite')" id="btn-limite">+ escribir <span class="note-dot"></span></button>
+          </div>
+        </div>
+        <div class="expand-area" id="exp-limite">
+          <textarea placeholder="El límite que sostuve fue... Lo dije / hice así... Me sentí..." data-key="limite" oninput="saveNote(this)"></textarea>
+          <div class="char-count" id="cc-limite">0 caracteres</div>
+        </div>
+      </div>
+
+      <div class="item estrategico" id="item-accion">
+        <div class="item-main" onclick="toggleCheck('accion')">
+          <div class="checkbox"></div>
+          <div class="item-content">
+            <div class="item-label">Acción poderosa del día</div>
+            <div class="item-detail">1 acción desde el fruto del Espíritu Santo</div>
+          </div>
+          <div class="item-right">
+            <div class="item-tag tag-estrategico">⚡ Estratégico</div>
+            <button class="write-btn" onclick="toggleExpand(event,'accion')" id="btn-accion">+ escribir <span class="note-dot"></span></button>
+          </div>
+        </div>
+        <div class="expand-area" id="exp-accion">
+          <textarea placeholder="Desde el fruto del Espíritu Santo, hoy actué con... y lo hice cuando..." data-key="accion" oninput="saveNote(this)"></textarea>
+          <div class="char-count" id="cc-accion">0 caracteres</div>
+        </div>
+      </div>
+
+      <div class="item emocional" id="item-conflicto">
+        <div class="item-main" onclick="toggleCheck('conflicto')">
+          <div class="checkbox"></div>
+          <div class="item-content">
+            <div class="item-label">Manejo estratégico de conflicto</div>
+            <div class="item-detail">Si hubo conflicto: ¿regulé antes de responder?</div>
+          </div>
+          <div class="item-right">
+            <div class="item-tag tag-emocional">💜 Emocional</div>
+            <button class="write-btn" onclick="toggleExpand(event,'conflicto')" id="btn-conflicto">+ escribir <span class="note-dot"></span></button>
+          </div>
+        </div>
+        <div class="expand-area" id="exp-conflicto">
+          <textarea placeholder="¿Hubo conflicto? ¿Con quién? ¿Cómo respondí? ¿Qué aprendí?" data-key="conflicto" oninput="saveNote(this)"></textarea>
+          <div class="char-count" id="cc-conflicto">0 caracteres</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ NOCHE ══ -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-icon">🌙</span>
+      <span class="section-title">Cierre de noche</span>
+      <div class="section-rule"></div>
+      <span class="section-time">10 – 15 min</span>
+    </div>
+    <div class="items">
+      <div class="item estrategico" id="item-revision">
+        <div class="item-main" onclick="toggleCheck('revision')">
+          <div class="checkbox"></div>
+          <div class="item-content">
+            <div class="item-label">Revisión de la lista</div>
+            <div class="item-detail">¿Cumplí mis ítems de hoy?</div>
+          </div>
+          <div class="item-right">
+            <div class="item-tag tag-estrategico">⚡ Estratégico</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="item emocional" id="item-evidencia">
+        <div class="item-main" onclick="toggleCheck('evidencia')">
+          <div class="checkbox"></div>
+          <div class="item-content">
+            <div class="item-label">Evidencia de estabilidad</div>
+            <div class="item-detail">Hoy fui Ana María cuando...</div>
+          </div>
+          <div class="item-right">
+            <div class="item-tag tag-emocional">💜 Emocional</div>
+            <button class="write-btn" onclick="toggleExpand(event,'evidencia')" id="btn-evidencia">+ escribir <span class="note-dot"></span></button>
+          </div>
+        </div>
+        <div class="expand-area" id="exp-evidencia">
+          <textarea placeholder="Hoy fui Ana María cuando..." data-key="evidencia" oninput="saveNote(this)"></textarea>
+          <div class="char-count" id="cc-evidencia">0 caracteres</div>
+        </div>
+      </div>
+
+      <div class="item espiritual" id="item-gratitud">
+        <div class="item-main" onclick="toggleCheck('gratitud')">
+          <div class="checkbox"></div>
+          <div class="item-content">
+            <div class="item-label">Gratitud + soltar</div>
+            <div class="item-detail">1 cosa que agradezco · 1 cosa que suelto del día</div>
+          </div>
+          <div class="item-right">
+            <div class="item-tag tag-espiritual">🌿 Espiritual</div>
+            <button class="write-btn" onclick="toggleExpand(event,'gratitud')" id="btn-gratitud">+ escribir <span class="note-dot"></span></button>
+          </div>
+        </div>
+        <div class="expand-area" id="exp-gratitud">
+          <textarea placeholder="Agradezco: ...   Suelto: ..." data-key="gratitud" oninput="saveNote(this)"></textarea>
+          <div class="char-count" id="cc-gratitud">0 caracteres</div>
+        </div>
+      </div>
+
+      <div class="item trilogia" id="item-semilla">
+        <div class="item-main" onclick="toggleCheck('semilla')">
+          <div class="checkbox"></div>
+          <div class="item-content">
+            <div class="item-label">✍️ Semilla del libro</div>
+            <div class="item-detail">¿Hubo hoy una emoción, imagen o frase para la trilogía?</div>
+          </div>
+          <div class="item-right">
+            <div class="item-tag tag-trilogia">✍️ Trilogía</div>
+            <button class="write-btn" onclick="toggleExpand(event,'semilla')" id="btn-semilla">+ escribir <span class="note-dot"></span></button>
+          </div>
+        </div>
+        <div class="expand-area" id="exp-semilla">
+          <textarea placeholder="La semilla de hoy es..." data-key="semilla" oninput="saveNote(this)"></textarea>
+          <div class="char-count" id="cc-semilla">0 caracteres</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ DISCIPLINA ESPIRITUAL ══ -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-icon">✨</span>
+      <span class="section-title">Disciplina espiritual</span>
+      <div class="section-rule"></div>
+      <span class="section-time">5 días / semana</span>
+    </div>
+    <div class="items">
+      <div class="item espiritual" id="item-lectura">
+        <div class="item-main" onclick="toggleCheck('lectura')">
+          <div class="checkbox"></div>
+          <div class="item-content">
+            <div class="item-label">Lectura / estudio espiritual</div>
+            <div class="item-detail">10–20 min de formación intencional</div>
+          </div>
+          <div class="item-right">
+            <div class="item-tag tag-espiritual">🌿 Espiritual</div>
+            <button class="write-btn" onclick="toggleExpand(event,'lectura')" id="btn-lectura">+ escribir <span class="note-dot"></span></button>
+          </div>
+        </div>
+        <div class="expand-area" id="exp-lectura">
+          <textarea placeholder="¿Qué leí o estudié? ¿Qué frase o verdad me impactó hoy?" data-key="lectura" oninput="saveNote(this)"></textarea>
+          <div class="char-count" id="cc-lectura">0 caracteres</div>
+        </div>
+      </div>
+
+      <div class="item espiritual" id="item-silencio">
+        <div class="item-main" onclick="toggleCheck('silencio')">
+          <div class="checkbox"></div>
+          <div class="item-content">
+            <div class="item-label">Silencio o meditación contemplativa</div>
+            <div class="item-detail">5–10 min sin pantallas, en quietud</div>
+          </div>
+          <div class="item-right">
+            <div class="item-tag tag-espiritual">🌿 Espiritual</div>
+            <button class="write-btn" onclick="toggleExpand(event,'silencio')" id="btn-silencio">+ escribir <span class="note-dot"></span></button>
+          </div>
+        </div>
+        <div class="expand-area" id="exp-silencio">
+          <textarea placeholder="¿Qué recibí en el silencio de hoy?" data-key="silencio" oninput="saveNote(this)"></textarea>
+          <div class="char-count" id="cc-silencio">0 caracteres</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ SEMANAL ══ -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-icon">📅</span>
+      <span class="section-title">Revisión semanal</span>
+      <div class="section-rule"></div>
+      <span class="section-time">1 vez / semana · 15 min</span>
+    </div>
+    <div class="items">
+      <div class="item estrategico" id="item-porcentaje">
+        <div class="item-main" onclick="toggleCheck('porcentaje')">
+          <div class="checkbox"></div>
+          <div class="item-content">
+            <div class="item-label">% de cumplimiento esta semana</div>
+            <div class="item-detail" id="weeklyStats">Calculando...</div>
+          </div>
+          <div class="item-right">
+            <div class="item-tag tag-estrategico">⚡ Estratégico</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="item emocional" id="item-patron">
+        <div class="item-main" onclick="toggleCheck('patron')">
+          <div class="checkbox"></div>
+          <div class="item-content">
+            <div class="item-label">Patrón emocional de la semana</div>
+            <div class="item-detail">¿Qué situación me desreguló más? ¿Qué aprendí?</div>
+          </div>
+          <div class="item-right">
+            <div class="item-tag tag-emocional">💜 Emocional</div>
+            <button class="write-btn" onclick="toggleExpand(event,'patron')" id="btn-patron">+ escribir <span class="note-dot"></span></button>
+          </div>
+        </div>
+        <div class="expand-area" id="exp-patron">
+          <textarea placeholder="El patrón que más se activó esta semana fue... Lo que aprendí fue..." data-key="patron" oninput="saveNote(this)"></textarea>
+          <div class="char-count" id="cc-patron">0 caracteres</div>
+        </div>
+      </div>
+
+      <div class="item mental" id="item-ajuste">
+        <div class="item-main" onclick="toggleCheck('ajuste')">
+          <div class="checkbox"></div>
+          <div class="item-content">
+            <div class="item-label">Ajuste de estrategia</div>
+            <div class="item-detail">¿Qué cambio 1 cosa para la próxima semana?</div>
+          </div>
+          <div class="item-right">
+            <div class="item-tag tag-mental">🧠 Mental</div>
+            <button class="write-btn" onclick="toggleExpand(event,'ajuste')" id="btn-ajuste">+ escribir <span class="note-dot"></span></button>
+          </div>
+        </div>
+        <div class="expand-area" id="exp-ajuste">
+          <textarea placeholder="La semana que viene voy a cambiar / mejorar..." data-key="ajuste" oninput="saveNote(this)"></textarea>
+          <div class="char-count" id="cc-ajuste">0 caracteres</div>
+        </div>
+      </div>
+
+      <div class="item emocional" id="item-celebrar">
+        <div class="item-main" onclick="toggleCheck('celebrar')">
+          <div class="checkbox"></div>
+          <div class="item-content">
+            <div class="item-label">Celebrar lo que sí funcionó</div>
+            <div class="item-detail">Mi victoria concreta de esta semana fue...</div>
+          </div>
+          <div class="item-right">
+            <div class="item-tag tag-emocional">💜 Emocional</div>
+            <button class="write-btn" onclick="toggleExpand(event,'celebrar')" id="btn-celebrar">+ escribir <span class="note-dot"></span></button>
+          </div>
+        </div>
+        <div class="expand-area" id="exp-celebrar">
+          <textarea placeholder="Esta semana celebro que..." data-key="celebrar" oninput="saveNote(this)"></textarea>
+          <div class="char-count" id="cc-celebrar">0 caracteres</div>
+        </div>
+      </div>
+
+      <div class="item trilogia" id="item-journaling">
+        <div class="item-main" onclick="toggleCheck('journaling')">
+          <div class="checkbox"></div>
+          <div class="item-content">
+            <div class="item-label">✍️ Journaling semanal en Notion</div>
+            <div class="item-detail">Entra a tu espacio sagrado y escribe libremente</div>
+          </div>
+          <div class="item-right">
+            <div class="item-tag tag-trilogia">✍️ Trilogía</div>
+            <button class="write-btn" onclick="toggleExpand(event,'journaling')" id="btn-journaling">+ escribir <span class="note-dot"></span></button>
+          </div>
+        </div>
+        <div class="expand-area" id="exp-journaling">
+          <textarea style="min-height:120px;" placeholder="Esta semana en mi proceso de transformación vi, sentí, aprendí..." data-key="journaling" oninput="saveNote(this)"></textarea>
+          <div class="char-count" id="cc-journaling">0 caracteres</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ TRES PUNTOS PODEROSOS ══ -->
+  <div class="gold-divider"><span></span><div class="d"></div><span></span></div>
+
+  <div class="writing-section">
+    <div class="writing-block">
+      <div class="writing-label">⚡ Mi acción poderosa de hoy fue</div>
+      <div class="writing-prompt">Desde el fruto del Espíritu Santo, hoy actué con ____________ y lo hice cuando...</div>
+      <textarea class="writing-area" id="field-accionpoderosa" placeholder="Escribe aquí..." oninput="saveField('accionpoderosa', this.value)"></textarea>
+    </div>
+
+    <div class="writing-block">
+      <div class="writing-label">💜 Mi evidencia de estabilidad hoy</div>
+      <div class="writing-prompt">Hoy fui Ana María cuando...</div>
+      <textarea class="writing-area" id="field-evidenciaestabilidad" placeholder="Escribe aquí..." oninput="saveField('evidenciaestabilidad', this.value)"></textarea>
+    </div>
+
+    <div class="writing-block">
+      <div class="writing-label gold-label">✍️ Semilla del libro de hoy</div>
+      <div class="writing-prompt" style="color:var(--amber);opacity:0.85">La frase, imagen o emoción que emergió hoy pertenece a:</div>
+      <div class="trilogy-checkboxes">
+        <label class="trilogy-option"><input type="checkbox" id="tril-piedra" onchange="saveTrilogia()"><div class="trilogy-box"></div><span class="trilogy-name">Un corazón de piedra</span></label>
+        <label class="trilogy-option"><input type="checkbox" id="tril-carne" onchange="saveTrilogia()"><div class="trilogy-box"></div><span class="trilogy-name">Un corazón de carne</span></label>
+        <label class="trilogy-option"><input type="checkbox" id="tril-dios" onchange="saveTrilogia()"><div class="trilogy-box"></div><span class="trilogy-name">Un corazón para Dios</span></label>
+      </div>
+      <textarea class="writing-area gold-area" id="field-semillafinal" style="margin-top:12px;" placeholder="La semilla de hoy..." oninput="saveField('semillafinal', this.value)"></textarea>
+    </div>
+  </div>
+
+  <!-- ══ EXPORTAR ══ -->
+  <div class="export-section">
+    <div class="export-header">Exportar para análisis</div>
+    <div class="export-btns">
+      <button class="export-btn primary" onclick="exportDay()">📄 Exportar este día</button>
+      <button class="export-btn" onclick="exportWeek()">📋 Exportar esta semana</button>
+      <button class="export-btn" onclick="exportAll()">🗂 Exportar todo el archivo</button>
+      <button class="export-btn" onclick="exportAnalysisPrompt()">🔍 Protocolo de análisis IA</button>
+    </div>
+  </div>
+
+  <!-- ══ CIERRE ══ -->
+  <div class="closing-bar">
+    <div class="closing-rule"><span></span><span class="closing-diamonds">◆ ◆ ◆</span><span></span></div>
+    <p class="affirmation">"Mi vida es el primer manuscrito<br>de la trilogía que Dios me encargó."</p>
+    <div class="signature">Ana María · Un corazón para Dios</div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── ESTADO GLOBAL ──
+const START_DATE = '2026-02-24';
+let currentDate = todayStr();
+
+const ITEMS = ['devocional','intencion','checkin','regulacion','sanacion','limite','accion','conflicto','revision','evidencia','gratitud','semilla','lectura','silencio','porcentaje','patron','ajuste','celebrar','journaling'];
+const NOTES = ['devocional','intencion','checkin','regulacion','sanacion','limite','accion','conflicto','evidencia','gratitud','semilla','lectura','silencio','patron','ajuste','celebrar','journaling'];
+const FIELDS = ['accionpoderosa','evidenciaestabilidad','semillafinal'];
+
+function todayStr() {
+  return new Date().toISOString().split('T')[0];
+}
+
+function key(date, type, id) {
+  return `anamaria_${date}_${type}_${id}`;
+}
+
+// ── STORAGE ──
+function getData(date) {
+  const data = {};
+  ITEMS.forEach(id => {
+    data[id] = { checked: localStorage.getItem(key(date,'check',id)) === '1' };
+  });
+  NOTES.forEach(id => {
+    data[id].note = localStorage.getItem(key(date,'note',id)) || '';
+  });
+  FIELDS.forEach(id => {
+    data[id] = localStorage.getItem(key(date,'field',id)) || '';
+  });
+  data.emotional = parseInt(localStorage.getItem(key(date,'emotional','score'))) || 0;
+  data.trilogia = {
+    piedra: localStorage.getItem(key(date,'tril','piedra')) === '1',
+    carne: localStorage.getItem(key(date,'tril','carne')) === '1',
+    dios: localStorage.getItem(key(date,'tril','dios')) === '1',
+  };
+  return data;
+}
+
+// ── CARGAR FECHA ──
+function loadDate(dateStr) {
+  currentDate = dateStr;
+  const d = new Date(dateStr + 'T12:00:00');
+  const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+  document.getElementById('dateDisplay').textContent = d.toLocaleDateString('es-ES', options);
+  document.getElementById('datePicker').value = dateStr;
+
+  const data = getData(dateStr);
+
+  // Checks
+  ITEMS.forEach(id => {
+    const el = document.getElementById('item-' + id);
+    if (!el) return;
+    el.classList.toggle('checked', data[id].checked);
+  });
+
+  // Notas
+  NOTES.forEach(id => {
+    const ta = document.querySelector(`[data-key="${id}"]`);
+    if (!ta) return;
+    ta.value = data[id].note || '';
+    updateCharCount(id, ta.value.length);
+    const btn = document.getElementById('btn-' + id);
+    if (btn) btn.classList.toggle('has-content', ta.value.length > 0);
+    // Cerrar todos los expandibles al cambiar de día
+    const exp = document.getElementById('exp-' + id);
+    if (exp) { exp.classList.remove('open'); if (btn) btn.classList.remove('open'); }
+  });
+
+  // Campos finales
+  FIELDS.forEach(id => {
+    const el = document.getElementById('field-' + id);
+    if (el) el.value = data[id] || '';
+  });
+
+  // Trilogía
+  document.getElementById('tril-piedra').checked = data.trilogia.piedra;
+  document.getElementById('tril-carne').checked = data.trilogia.carne;
+  document.getElementById('tril-dios').checked = data.trilogia.dios;
+
+  // Emocional
+  updateEmotionalDots(data.emotional);
+  updateProgress();
+  updateCompletedCount();
+  updateWeeklyStats();
+}
+
+function goToDate(offset) {
+  if (offset === 0) {
+    loadDate(todayStr());
+    return;
+  }
+  const d = new Date(currentDate + 'T12:00:00');
+  d.setDate(d.getDate() + offset);
+  loadDate(d.toISOString().split('T')[0]);
+}
+
+// ── CHECK ──
+function toggleCheck(id) {
+  const el = document.getElementById('item-' + id);
+  const isChecked = !el.classList.contains('checked');
+  el.classList.toggle('checked', isChecked);
+  localStorage.setItem(key(currentDate, 'check', id), isChecked ? '1' : '0');
+  updateCompletedCount();
+  updateProgress();
+  updateWeeklyStats();
+}
+
+// ── EXPANDIR ──
+function toggleExpand(event, id) {
+  event.stopPropagation();
+  const exp = document.getElementById('exp-' + id);
+  const btn = document.getElementById('btn-' + id);
+  const isOpen = exp.classList.contains('open');
+  exp.classList.toggle('open', !isOpen);
+  btn.classList.toggle('open', !isOpen);
+  if (!isOpen) {
+    setTimeout(() => exp.querySelector('textarea').focus(), 350);
+  }
+}
+
+// ── GUARDAR NOTA ──
+function saveNote(ta) {
+  const id = ta.dataset.key;
+  localStorage.setItem(key(currentDate, 'note', id), ta.value);
+  updateCharCount(id, ta.value.length);
+  const btn = document.getElementById('btn-' + id);
+  if (btn) btn.classList.toggle('has-content', ta.value.length > 0);
+}
+
+function updateCharCount(id, n) {
+  const cc = document.getElementById('cc-' + id);
+  if (cc) cc.textContent = n + ' caracteres';
+}
+
+// ── GUARDAR CAMPO FINAL ──
+function saveField(id, value) {
+  localStorage.setItem(key(currentDate, 'field', id), value);
+}
+
+// ── GUARDAR TRILOGÍA ──
+function saveTrilogia() {
+  localStorage.setItem(key(currentDate,'tril','piedra'), document.getElementById('tril-piedra').checked ? '1' : '0');
+  localStorage.setItem(key(currentDate,'tril','carne'), document.getElementById('tril-carne').checked ? '1' : '0');
+  localStorage.setItem(key(currentDate,'tril','dios'), document.getElementById('tril-dios').checked ? '1' : '0');
+}
+
+// ── EMOCIONAL ──
+function updateEmotionalDots(score) {
+  const container = document.getElementById('emotionalDots');
+  container.innerHTML = '';
+  for (let i = 1; i <= 10; i++) {
+    const dot = document.createElement('div');
+    dot.className = 'dot' + (i <= score ? ' filled' : '');
+    dot.onclick = () => setEmotional(i);
+    container.appendChild(dot);
+  }
+  document.getElementById('emotionalScore').textContent = score > 0 ? score + '/10' : '—';
+}
+
+function setEmotional(score) {
+  localStorage.setItem(key(currentDate,'emotional','score'), score);
+  updateEmotionalDots(score);
+}
+
+// ── PROGRESO ──
+function updateProgress() {
+  // Contar días con al menos 8 ítems completados (de los 13 principales)
+  const mainItems = ['devocional','intencion','checkin','regulacion','sanacion','limite','accion','conflicto','revision','evidencia','gratitud','semilla','lectura'];
+  let completedDays = 0;
+  const allKeys = Object.keys(localStorage);
+  const daysSet = new Set();
+  allKeys.forEach(k => {
+    if (k.startsWith('anamaria_') && k.includes('_check_')) {
+      const parts = k.split('_');
+      if (parts.length >= 4) daysSet.add(parts[1]);
+    }
+  });
+  daysSet.forEach(date => {
+    let count = 0;
+    mainItems.forEach(id => {
+      if (localStorage.getItem(key(date,'check',id)) === '1') count++;
+    });
+    if (count >= 8) completedDays++;
+  });
+  const pct = Math.min(100, (completedDays / 90) * 100);
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('daysCount').textContent = completedDays;
+  ['m30','m60'].forEach((mid, i) => {
+    document.getElementById(mid).classList.toggle('reached', completedDays >= (i+1)*30);
+  });
+  document.getElementById('m90').classList.toggle('reached', completedDays >= 90);
+}
+
+function updateCompletedCount() {
+  let count = 0;
+  ITEMS.forEach(id => {
+    if (document.getElementById('item-' + id)?.classList.contains('checked')) count++;
+  });
+  document.getElementById('completedCount').textContent = count + ' / ' + ITEMS.length;
+}
+
+// ── STATS SEMANALES ──
+function updateWeeklyStats() {
+  const d = new Date(currentDate + 'T12:00:00');
+  const day = d.getDay();
+  const diff = day === 0 ? 6 : day - 1;
+  const monday = new Date(d); monday.setDate(d.getDate() - diff);
+  let completed = 0, total = 0;
+  for (let i = 0; i < 7; i++) {
+    const dd = new Date(monday); dd.setDate(monday.getDate() + i);
+    const ds = dd.toISOString().split('T')[0];
+    const mainItems = ['devocional','intencion','checkin','regulacion','sanacion','limite','accion','conflicto','revision','evidencia','gratitud','semilla','lectura'];
+    let dayCount = 0;
+    mainItems.forEach(id => { if (localStorage.getItem(key(ds,'check',id)) === '1') dayCount++; });
+    if (dayCount > 0 || ds <= currentDate) {
+      total++;
+      if (dayCount >= 8) completed++;
+    }
+  }
+  const pct = total > 0 ? Math.round((completed/total)*100) : 0;
+  document.getElementById('weeklyStats').textContent = `Esta semana: ${completed} / ${total} días con lista completa — ${pct}%`;
+}
+
+// ── EXPORTAR ──
+function buildDayText(date) {
+  const d = new Date(date + 'T12:00:00');
+  const label = d.toLocaleDateString('es-ES', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+  const data = getData(date);
+  const emotional = data.emotional;
+
+  const noteLabels = {
+    devocional: 'Oración / devocional',
+    intencion: 'Intención del día',
+    checkin: 'Check-in emocional',
+    regulacion: 'Pausa de regulación',
+    sanacion: 'Espacio de sanación quirúrgica con Dios',
+    limite: 'Límite sostenido',
+    accion: 'Acción poderosa del día',
+    conflicto: 'Manejo de conflicto',
+    evidencia: 'Evidencia de estabilidad',
+    gratitud: 'Gratitud + soltar',
+    semilla: 'Semilla del libro',
+    lectura: 'Lectura / estudio espiritual',
+    silencio: 'Silencio contemplativo',
+    patron: 'Patrón emocional',
+    ajuste: 'Ajuste de estrategia',
+    celebrar: 'Celebración semanal',
+    journaling: 'Journaling semanal',
+  };
+
+  let checkedItems = ITEMS.filter(id => data[id] && data[id].checked).length;
+  let t = `════════════════════════════════════════
+DIARIO DE TRANSFORMACIÓN · ANA MARÍA
+${label.toUpperCase()}
+════════════════════════════════════════
+
+Estado emocional: ${emotional > 0 ? emotional + '/10' : 'No registrado'}
+Ítems completados: ${checkedItems} / ${ITEMS.length}
+
+────────────────────────────────────────
+REFLEXIONES DEL DÍA
+────────────────────────────────────────\n`;
+
+  NOTES.forEach(id => {
+    const note = data[id] && data[id].note;
+    if (note && note.trim()) {
+      t += `\n[${noteLabels[id] || id}]\n${note.trim()}\n`;
+    }
+  });
+
+  t += `\n────────────────────────────────────────
+TRES PUNTOS PODEROSOS
+────────────────────────────────────────\n`;
+
+  const ap = data['accionpoderosa'];
+  const ee = data['evidenciaestabilidad'];
+  const sf = data['semillafinal'];
+  const tril = data.trilogia;
+
+  if (ap) t += `\n⚡ ACCIÓN PODEROSA:\n${ap}\n`;
+  if (ee) t += `\n💜 EVIDENCIA DE ESTABILIDAD:\n${ee}\n`;
+  if (sf) {
+    const libro = tril.piedra ? 'Un corazón de piedra' : tril.carne ? 'Un corazón de carne' : tril.dios ? 'Un corazón para Dios' : 'Sin etiquetar';
+    t += `\n✍️ SEMILLA DEL LIBRO (${libro}):\n${sf}\n`;
+  }
+  t += `\n════════════════════════════════════════\n`;
+  return t;
+}
+
+function exportDay() {
+  const text = buildDayText(currentDate);
+  downloadText(text, `AnaMaría_${currentDate}.txt`);
+  showToast('Día exportado ✓');
+}
+
+function exportWeek() {
+  const d = new Date(currentDate + 'T12:00:00');
+  const day = d.getDay();
+  const diff = day === 0 ? 6 : day - 1;
+  const monday = new Date(d); monday.setDate(d.getDate() - diff);
+  let text = `ARCHIVO SEMANAL · ANA MARÍA\nSemana del ${monday.toLocaleDateString('es-ES')}\n\n`;
+  for (let i = 0; i < 7; i++) {
+    const dd = new Date(monday); dd.setDate(monday.getDate() + i);
+    const ds = dd.toISOString().split('T')[0];
+    text += buildDayText(ds);
+    text += '\n';
+  }
+  downloadText(text, `AnaMaría_Semana_${monday.toISOString().split('T')[0]}.txt`);
+  showToast('Semana exportada ✓');
+}
+
+function exportAll() {
+  const allKeys = Object.keys(localStorage);
+  const daysSet = new Set();
+  allKeys.forEach(k => {
+    if (k.startsWith('anamaria_') && k.includes('_check_')) {
+      const parts = k.split('_');
+      if (parts.length >= 4) daysSet.add(parts[1]);
+    }
+  });
+  const days = Array.from(daysSet).sort();
+  let text = `ARCHIVO COMPLETO DE TRANSFORMACIÓN · ANA MARÍA\nTotal de días registrados: ${days.length}\n\n`;
+  days.forEach(date => { text += buildDayText(date) + '\n'; });
+  downloadText(text, `AnaMaría_ArchivoCompleto.txt`);
+  showToast('Archivo completo exportado ✓');
+}
+
+function exportAnalysisPrompt() {
+  const text = `PROTOCOLO DE ANÁLISIS · DIARIO DE TRANSFORMACIÓN DE ANA MARÍA
+════════════════════════════════════════════════════════════════
+
+Este documento contiene el diario de transformación de Ana María,
+una mujer en proceso de convertirse en su versión más alineada con
+el propósito de Dios para su vida.
+
+CONTEXTO DEL PROCESO:
+- Meta: Vivir de forma consistente como mujer estable, estratégica
+  y espiritualmente alineada para el 25 de mayo de 2026.
+- Duración: 90 días de cumplimiento diario de lista de verificación.
+- Trilogía en proceso: "Un corazón de piedra / Un corazón de carne /
+  Un corazón para Dios"
+
+DIMENSIONES DE ANÁLISIS — Por favor analiza este archivo en estas áreas:
+
+1. PATRONES EMOCIONALES
+   - ¿Cuáles son los patrones de desregulación más frecuentes?
+   - ¿Hay progreso en la regulación emocional semana a semana?
+   - ¿Qué situaciones o personas activan más los patrones?
+
+2. EVOLUCIÓN ESPIRITUAL
+   - ¿Cómo evoluciona la relación de Ana María con Dios a lo largo
+     del tiempo?
+   - ¿Qué verdades espirituales aparecen con mayor frecuencia?
+   - ¿Hay momentos de quiebre o avance significativo?
+
+3. IDENTIDAD Y AUTOCONCEPTO
+   - ¿Cómo se describe Ana María a sí misma en sus evidencias
+     de estabilidad?
+   - ¿Hay un cambio en el lenguaje que usa para hablar de sí misma?
+   - ¿Qué aspectos de Ana María (la versión del propósito) aparecen
+     con más frecuencia?
+
+4. LÍMITES Y RELACIONES
+   - ¿Cómo evoluciona su capacidad de sostener límites?
+   - ¿Con quiénes hay más conflictos y cómo los maneja?
+   - ¿Hay patrones relacionales que se repiten?
+
+5. SEMILLAS DE LA TRILOGÍA
+   - ¿Qué temas, imágenes o frases se repiten en las semillas?
+   - ¿A qué libro parecen pertenecer los materiales más ricos?
+   - ¿Qué arco narrativo emerge del conjunto?
+
+6. INSIGHTS INTEGRALES
+   - ¿Cuál es el mayor avance de este período?
+   - ¿Qué patrón necesita más atención?
+   - ¿Qué frase o imagen captura mejor la esencia de esta etapa
+     del proceso de Ana María?
+
+────────────────────────────────────────────────────────────────
+A continuación, el archivo de días exportado:
+════════════════════════════════════════════════════════════════
+
+`;
+  downloadText(text, `AnaMaría_ProtocoloAnalisis.txt`);
+  showToast('Protocolo exportado ✓');
+}
+
+function downloadText(text, filename) {
+  const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = filename; a.click();
+  URL.revokeObjectURL(url);
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+// ── INIT ──
+window.addEventListener('DOMContentLoaded', () => {
+  // Dots emocionales vacíos al inicio
+  const container = document.getElementById('emotionalDots');
+  for (let i = 1; i <= 10; i++) {
+    const dot = document.createElement('div');
+    dot.className = 'dot';
+    dot.onclick = () => setEmotional(i);
+    container.appendChild(dot);
+  }
+  loadDate(todayStr());
+});
+</script>
+</body>
+</html>
