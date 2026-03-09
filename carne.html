@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Un corazón de carne · Libro II</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=Cinzel:wght@300;400&family=Jost:wght@100;200;300&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg:       #2a1014;
+  --surface:  #341820;
+  --mid:      #40202a;
+  --accent:   #a84848;
+  --red:      #cc5858;
+  --red-pale: #ecc0b0;
+  --text:     #e8d4cc;
+  --dim:      #886868;
+  --faint:    #442028;
+  --white:    #f8eeea;
+}
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Jost', sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+body::after {
+  content: '';
+  position: fixed; inset: 0; z-index: 999;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  opacity: 0.028;
+  pointer-events: none;
+}
+
+.page { max-width: 760px; margin: 0 auto; padding: 0 40px 120px; position: relative; z-index: 1; }
+
+.book-header {
+  padding: 52px 0 72px;
+  border-bottom: 1px solid var(--faint);
+  margin-bottom: 80px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: end;
+  opacity: 0;
+  animation: fadeUp 1s ease 0.1s forwards;
+}
+.back-link {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: 'Cinzel', serif; font-size: 10px; letter-spacing: 3px;
+  color: var(--dim); text-decoration: none; text-transform: uppercase;
+  font-weight: 300; margin-bottom: 48px; transition: color 0.3s ease;
+}
+.back-link:hover { color: var(--red); }
+.book-eyebrow {
+  font-family: 'Cinzel', serif; font-size: 10px; letter-spacing: 5px;
+  color: var(--accent); text-transform: uppercase; font-weight: 300;
+  margin-bottom: 20px;
+  display: flex; align-items: center; gap: 12px;
+}
+.book-eyebrow::before { content: ''; width: 20px; height: 1px; background: var(--accent); opacity: 0.5; }
+.book-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(40px, 7vw, 72px);
+  font-weight: 300; line-height: 1.02; color: var(--white);
+}
+.book-title em { font-style: italic; color: var(--red-pale); }
+.book-sub {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 17px; font-style: italic;
+  color: var(--dim); margin-top: 18px; line-height: 1.75;
+}
+.header-right {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(100px, 14vw, 160px);
+  font-weight: 300; font-style: italic;
+  color: transparent;
+  -webkit-text-stroke: 1px var(--faint);
+  line-height: 1; letter-spacing: -6px;
+  user-select: none; pointer-events: none;
+  padding-left: 24px;
+}
+
+.section {
+  margin-bottom: 72px; opacity: 0; animation: fadeUp 1s ease forwards;
+}
+.section:nth-child(1) { animation-delay: 0.3s; }
+.section:nth-child(2) { animation-delay: 0.4s; }
+.section:nth-child(3) { animation-delay: 0.5s; }
+.section:nth-child(4) { animation-delay: 0.6s; }
+.section:nth-child(5) { animation-delay: 0.7s; }
+
+.section-label {
+  font-family: 'Cinzel', serif; font-size: 10px; letter-spacing: 4px;
+  color: var(--accent); text-transform: uppercase; font-weight: 300;
+  margin-bottom: 28px; display: flex; align-items: center; gap: 16px;
+}
+.section-label::after { content: ''; flex: 1; height: 1px; background: linear-gradient(to right, var(--faint), transparent); }
+
+.arc-text {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(20px, 2.8vw, 24px);
+  font-weight: 300; line-height: 1.9; color: var(--text);
+}
+.arc-text em { font-style: italic; color: var(--red-pale); }
+
+.verses { display: flex; flex-direction: column; gap: 2px; }
+.verse-card {
+  background: var(--surface); border-left: 1px solid var(--accent);
+  padding: 22px 28px; transition: border-left-width 0.3s ease, padding-left 0.3s ease;
+}
+.verse-card:hover { border-left-width: 2px; padding-left: 27px; }
+.verse-text { font-family: 'Cormorant Garamond', serif; font-size: 21px; font-style: italic; font-weight: 300; color: var(--text); line-height: 1.8; margin-bottom: 10px; }
+.verse-ref { font-family: 'Cinzel', serif; font-size: 10px; letter-spacing: 2px; color: var(--accent); font-weight: 300; }
+
+.image-zone {
+  border: 1px dashed var(--faint); min-height: 260px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 10px; padding: 40px; text-align: center; position: relative;
+  overflow: hidden; cursor: pointer; transition: border-color 0.3s ease;
+}
+.image-zone:hover { border-color: var(--accent); }
+.image-zone input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
+.image-zone img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.55; }
+.image-zone-label { font-family: 'Cinzel', serif; font-size: 10px; letter-spacing: 3px; color: var(--dim); text-transform: uppercase; font-weight: 300; position: relative; z-index: 1; }
+.image-zone-hint { font-family: 'Cormorant Garamond', serif; font-size: 13px; font-style: italic; color: var(--dim); opacity: 0.5; position: relative; z-index: 1; }
+
+.seeds { display: flex; flex-direction: column; gap: 2px; }
+.seed-item { background: var(--surface); padding: 18px 24px; border-left: 1px solid var(--faint); transition: border-color 0.3s ease; }
+.seed-item:hover { border-color: var(--accent); }
+.seed-meta { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+.seed-date { font-family: 'Cinzel', serif; font-size: 10px; letter-spacing: 2px; color: var(--dim); font-weight: 300; }
+.seed-dot { width: 2px; height: 2px; background: var(--accent); border-radius: 50%; }
+.seed-type { font-family: 'Cinzel', serif; font-size: 10px; letter-spacing: 1px; color: var(--accent); font-weight: 300; text-transform: uppercase; }
+.seed-content { font-family: 'Cormorant Garamond', serif; font-size: 18px; font-style: italic; color: var(--text); line-height: 1.7; }
+.seeds-empty { font-family: 'Cormorant Garamond', serif; font-size: 17px; font-style: italic; color: var(--dim); text-align: center; padding: 40px; border: 1px dashed var(--faint); }
+
+.chapters { display: flex; flex-direction: column; gap: 1px; margin-bottom: 16px; }
+.chapter-btn { font-family: 'Cinzel', serif; font-size: 10px; letter-spacing: 2px; color: var(--dim); background: none; border: none; padding: 10px 0; cursor: pointer; text-align: left; text-transform: uppercase; font-weight: 300; transition: color 0.2s ease; display: flex; align-items: center; gap: 12px; }
+.chapter-btn::before { content: ''; width: 16px; height: 1px; background: currentColor; opacity: 0.3; }
+.chapter-btn:hover { color: var(--red); }
+.chapter-btn.active { color: var(--red-pale); }
+.chapter-add { font-family: 'Cinzel', serif; font-size: 10px; letter-spacing: 2px; color: var(--accent); background: none; border: 1px dashed var(--faint); padding: 9px 18px; cursor: pointer; text-transform: uppercase; font-weight: 300; transition: all 0.2s ease; margin-top: 8px; }
+.chapter-add:hover { border-color: var(--accent); color: var(--red); }
+.writing-area { width: 100%; min-height: 220px; background: var(--surface); border: none; border-bottom: 1px solid var(--faint); padding: 28px 0; font-family: 'Cormorant Garamond', serif; font-size: 21px; color: var(--text); resize: none; outline: none; line-height: 1.95; caret-color: var(--red); transition: border-color 0.3s ease; }
+.writing-area:focus { border-bottom-color: var(--accent); }
+.writing-area::placeholder { color: var(--dim); font-style: italic; opacity: 0.4; }
+.writing-meta { display: flex; justify-content: space-between; margin-top: 10px; }
+.word-count { font-family: 'Cinzel', serif; font-size: 10px; letter-spacing: 1px; color: var(--dim); font-weight: 300; }
+.save-indicator { font-family: 'Cinzel', serif; font-size: 10px; letter-spacing: 1px; color: var(--accent); font-weight: 300; opacity: 0; transition: opacity 0.3s ease; }
+.save-indicator.show { opacity: 1; }
+
+.export-row { display: flex; gap: 2px; margin-top: 56px; }
+.exp-btn { font-family: 'Cinzel', serif; font-size: 10px; letter-spacing: 2px; padding: 12px 22px; border: 1px solid var(--faint); background: none; color: var(--dim); cursor: pointer; text-transform: uppercase; font-weight: 300; transition: all 0.25s ease; }
+.exp-btn:hover { border-color: var(--accent); color: var(--red); }
+.exp-btn.primary { background: var(--surface); color: var(--red-pale); border-color: var(--faint); }
+.exp-btn.primary:hover { background: var(--mid); }
+
+.toast { position: fixed; bottom: 32px; right: 32px; background: var(--surface); color: var(--red-pale); font-family: 'Cinzel', serif; font-size: 9px; letter-spacing: 2px; padding: 12px 20px; opacity: 0; transform: translateY(6px); transition: all 0.3s ease; pointer-events: none; z-index: 100; border-left: 1px solid var(--red); }
+.toast.show { opacity: 1; transform: translateY(0); }
+
+@keyframes fadeUp { from { opacity:0; transform:translateY(18px); } to { opacity:1; transform:translateY(0); } }
+@media (max-width: 600px) { .page { padding: 0 20px 80px; } .book-header { grid-template-columns: 1fr; } .header-right { display: none; } .export-row { flex-direction: column; } }
+</style>
+<style>
+.site-nav {
+  display: flex; align-items: center; justify-content: center;
+  gap: 32px; padding: 14px 40px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  background: rgba(0,0,0,0.25);
+  backdrop-filter: blur(8px);
+  position: sticky; top: 0; z-index: 50;
+  flex-wrap: wrap;
+}
+.site-nav a {
+  font-family: 'Cinzel', serif; font-size: 9px; letter-spacing: 3px;
+  color: rgba(255,255,255,0.35); text-decoration: none; text-transform: uppercase;
+  font-weight: 300; transition: color 0.3s ease;
+  position: relative; padding-bottom: 3px;
+}
+.site-nav a::after {
+  content: ''; position: absolute; bottom: 0; left: 0;
+  width: 0; height: 1px; background: rgba(255,255,255,0.5);
+  transition: width 0.3s ease;
+}
+.site-nav a:hover { color: rgba(255,255,255,0.8); }
+.site-nav a:hover::after { width: 100%; }
+.site-nav-sep { width: 1px; height: 10px; background: rgba(255,255,255,0.1); }
+@media (max-width: 520px) { .site-nav { gap: 16px; padding: 12px 20px; } }
+</style>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="index.html">Mi meta</a>
+  <div class="site-nav-sep"></div>
+  <a href="diario_anamaria.html">Diario</a>
+  <div class="site-nav-sep"></div>
+  <a href="sanacion_quirurgica.html">Sanación</a>
+  <div class="site-nav-sep"></div>
+  <a href="trilogia.html">La trilogía</a>
+</nav>
+<div class="page">
+
+  <div class="book-header">
+    <div class="header-left">
+      <a href="trilogia.html" class="back-link">← La trilogía</a>
+      <div class="book-eyebrow">Libro II · La historia que está siendo</div>
+      <h1 class="book-title">Un corazón<br><em>de carne</em></h1>
+      <p class="book-sub">La semilla que rompe el suelo.<br>El proceso que duele porque está sanando.</p>
+    </div>
+    <div class="header-right">II</div>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Arco narrativo</div>
+    <div class="arc-text">
+      Este libro narra el <em>durante</em>. El momento en que algo en el interior decide moverse.<br><br>
+      Es la historia del deshielo. De cuando el corazón de piedra comenzó a quebrarse — no por golpe, sino por gracia. El dolor de la transformación. La semilla que tiene que morir antes de convertirse en árbol.<br><br>
+      Aquí viven las lágrimas que sorprenden. Los momentos de rendición. El primer "me equivoqué" que no destruyó. La mujer que empieza a sentir de nuevo.
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Imagen del libro</div>
+    <div class="image-zone" onclick="document.getElementById('imgInput2').click()">
+      <input type="file" id="imgInput2" accept="image/*" onchange="loadImage(this)" style="pointer-events:none">
+      <div class="image-zone-label">+ Agregar imagen</div>
+      <div class="image-zone-hint">Tierra · Brotes · Lluvia que rompe</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Versículos</div>
+    <div class="verses">
+      <div class="verse-card">
+        <div class="verse-text">"De cierto, de cierto os digo, que si el grano de trigo no cae en la tierra y muere, queda solo; pero si muere, lleva mucho fruto."</div>
+        <div class="verse-ref">Juan 12:24</div>
+      </div>
+      <div class="verse-card">
+        <div class="verse-text">"Y quitaré de vuestra carne el corazón de piedra, y os daré corazón de carne."</div>
+        <div class="verse-ref">Ezequiel 36:26b</div>
+      </div>
+      <div class="verse-card">
+        <div class="verse-text">"Vendó sus heridas; derramó en ellas aceite y vino."</div>
+        <div class="verse-ref">Lucas 10:34</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Semillas del diario</div>
+    <div class="seeds" id="seedsContainer">
+      <div class="seeds-empty">Las semillas de este libro aparecerán aquí cuando las etiquetes en tu diario.</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Fragmentos</div>
+    <div class="chapters" id="chaptersList"></div>
+    <button class="chapter-add" onclick="addChapter()">+ Nuevo fragmento</button>
+    <div style="margin-top: 20px;">
+      <textarea class="writing-area" id="writingArea"
+        placeholder="Escribe aquí el fragmento de este libro. Deja que las palabras lleguen..."
+        oninput="autoSave()"></textarea>
+      <div class="writing-meta">
+        <span class="word-count" id="wc">0 palabras</span>
+        <span class="save-indicator" id="si">Guardado ✓</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="export-row">
+    <button class="exp-btn primary" onclick="exportBook()">Exportar libro</button>
+    <button class="exp-btn" onclick="exportAnalysis()">Protocolo IA</button>
+  </div>
+
+</div>
+<div class="toast" id="toast"></div>
+<script>
+let chapters = JSON.parse(localStorage.getItem('libro2_chapters') || '[]');
+let cur = 0;
+function init() {
+  renderChapters(); loadSeeds();
+  const s = localStorage.getItem('libro2_text_' + cur);
+  if (s) { document.getElementById('writingArea').value = s; updateWC(); }
+}
+function renderChapters() {
+  const list = document.getElementById('chaptersList');
+  list.innerHTML = '';
+  chapters.forEach((ch, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'chapter-btn' + (i === cur ? ' active' : '');
+    btn.textContent = ch; btn.onclick = () => switchChapter(i);
+    list.appendChild(btn);
+  });
+}
+function addChapter() {
+  const name = prompt('Nombre del fragmento:');
+  if (!name) return;
+  chapters.push(name);
+  localStorage.setItem('libro2_chapters', JSON.stringify(chapters));
+  cur = chapters.length - 1;
+  document.getElementById('writingArea').value = '';
+  renderChapters();
+}
+function switchChapter(i) {
+  cur = i;
+  document.getElementById('writingArea').value = localStorage.getItem('libro2_text_' + i) || '';
+  updateWC(); renderChapters();
+}
+let timer;
+function autoSave() {
+  updateWC(); clearTimeout(timer);
+  timer = setTimeout(() => {
+    localStorage.setItem('libro2_text_' + cur, document.getElementById('writingArea').value);
+    const si = document.getElementById('si');
+    si.classList.add('show'); setTimeout(() => si.classList.remove('show'), 2000);
+  }, 800);
+}
+function updateWC() {
+  const t = document.getElementById('writingArea').value;
+  document.getElementById('wc').textContent = (t.trim() ? t.trim().split(/\s+/).length : 0) + ' palabras';
+}
+function loadSeeds() {
+  const c = document.getElementById('seedsContainer');
+  const keys = Object.keys(localStorage).filter(k => k.includes('_field_semillafinal') || k.includes('_note_semilla'));
+  const seeds = [];
+  keys.forEach(k => {
+    const val = localStorage.getItem(k);
+    const tag = localStorage.getItem(k.replace('_field_semillafinal','_tril_carne').replace('_note_semilla','_tril_carne'));
+    if (val && val.trim() && tag === '1') seeds.push({ date: k.split('_')[1], text: val });
+  });
+  if (!seeds.length) return;
+  c.innerHTML = '';
+  seeds.forEach(s => {
+    const d = document.createElement('div'); d.className = 'seed-item';
+    d.innerHTML = `<div class="seed-meta"><span class="seed-date">${s.date}</span><div class="seed-dot"></div><span class="seed-type">Semilla</span></div><div class="seed-content">${s.text}</div>`;
+    c.appendChild(d);
+  });
+}
+function loadImage(input) {
+  const zone = input.closest('.image-zone');
+  if (!input.files[0]) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    let img = zone.querySelector('img');
+    if (!img) { img = document.createElement('img'); zone.appendChild(img); }
+    img.src = e.target.result;
+    zone.querySelector('.image-zone-label').style.opacity = '0';
+    zone.querySelector('.image-zone-hint').style.opacity = '0';
+  };
+  reader.readAsDataURL(input.files[0]);
+}
+function exportBook() {
+  let text = `════════════════════════════════════════\nUN CORAZÓN DE CARNE · Libro II · Ana María\n════════════════════════════════════════\n\n`;
+  if (!chapters.length) { const m = localStorage.getItem('libro2_text_0')||''; if(m) text+=m+'\n'; }
+  else chapters.forEach((ch,i) => { const c=localStorage.getItem('libro2_text_'+i)||''; if(c) text+=`[${ch}]\n${c}\n\n`; });
+  dl(text, 'Libro2_CorazonDeCarne.txt'); toast('Libro exportado ✓');
+}
+function exportAnalysis() {
+  dl(`PROTOCOLO DE ANÁLISIS · UN CORAZÓN DE CARNE\n════════════════════════════════════════\n\n1. ¿Cuáles son los temas centrales que emergen?\n2. ¿Qué momentos de quiebre o rendición aparecen?\n3. ¿Cuál es la voz narrativa de Ana María?\n4. ¿Qué imágenes de transformación tienen mayor potencia?\n5. ¿Qué falta por explorar?\n6. ¿Qué frase podría ser la primera línea?\n\n════════════════════════════════════════\nMATERIAL:\n\n`, 'Protocolo_Libro2.txt');
+  toast('Protocolo exportado ✓');
+}
+function dl(text, filename) {
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([text],{type:'text/plain;charset=utf-8'}));
+  a.download = filename; a.click();
+}
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
+window.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>

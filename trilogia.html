@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>La Trilogía · Ana María</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Cinzel:wght@300;400&family=Jost:wght@100;200;300&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --ink:   #0e0d0b;
+  --paper: #f5f2ec;
+  --dust:  #e8e3d9;
+  --gold:  #c9a84c;
+  --mist:  #b0a898;
+  --faint: #d8d2c8;
+}
+
+html { scroll-behavior: smooth; }
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: 'Jost', sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* grain */
+body::after {
+  content: '';
+  position: fixed; inset: 0; z-index: 999;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  opacity: 0.022;
+  pointer-events: none;
+}
+
+.frame {
+  min-height: 100vh;
+  display: grid;
+  grid-template-rows: 56px 1fr 52px;
+}
+
+/* ── STRIP ── */
+.strip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 48px;
+  border-bottom: 1px solid var(--faint);
+  opacity: 0;
+  animation: appear 0.8s ease 0.1s forwards;
+}
+.strip-left {
+  font-family: 'Cinzel', serif;
+  font-size: 9px; letter-spacing: 4px;
+  color: var(--mist); font-weight: 300; text-transform: uppercase;
+}
+.strip-right {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 12px; font-style: italic; color: var(--mist);
+}
+
+/* ── STAGE ── */
+.stage {
+  display: grid;
+  grid-template-columns: 1fr 1px 1fr 1px 1fr;
+}
+.divider { background: var(--faint); }
+
+/* ── CADA LIBRO ── */
+.book {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 56px 48px;
+  text-decoration: none;
+  color: inherit;
+  overflow: hidden;
+  background: var(--paper);
+  transition: background 0.65s cubic-bezier(0.4,0,0.2,1);
+}
+
+/* número fantasma de fondo */
+.book-phantom {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(200px, 26vw, 320px);
+  font-weight: 300;
+  line-height: 1;
+  color: transparent;
+  -webkit-text-stroke: 1px var(--faint);
+  pointer-events: none; user-select: none;
+  transition: -webkit-text-stroke-color 0.65s ease;
+  letter-spacing: -12px;
+}
+
+/* palabra grande oblicua */
+.book-oblique {
+  position: absolute;
+  bottom: 52%; left: 44px;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(80px, 10vw, 124px);
+  font-weight: 300;
+  font-style: italic;
+  line-height: 1;
+  color: var(--faint);
+  pointer-events: none; user-select: none;
+  transition: color 0.65s ease, opacity 0.65s ease;
+  white-space: nowrap;
+  letter-spacing: -3px;
+}
+
+.book-content {
+  position: relative; z-index: 2;
+  opacity: 0; animation: slideUp 1s ease forwards;
+}
+.book:nth-child(1) .book-content { animation-delay: 0.35s; }
+.book:nth-child(3) .book-content { animation-delay: 0.5s; }
+.book:nth-child(5) .book-content { animation-delay: 0.65s; }
+
+.book-num {
+  font-family: 'Cinzel', serif;
+  font-size: 10px; letter-spacing: 5px;
+  color: var(--mist); font-weight: 300; text-transform: uppercase;
+  margin-bottom: 28px;
+  display: flex; align-items: center; gap: 12px;
+  transition: color 0.4s ease;
+}
+.book-num::before {
+  content: '';
+  width: 20px; height: 1px;
+  background: currentColor; opacity: 0.35;
+}
+
+.book-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(32px, 3.8vw, 54px);
+  font-weight: 300; line-height: 1.08;
+  color: var(--ink);
+  margin-bottom: 18px;
+  transition: color 0.4s ease;
+}
+.book-title em { font-style: italic; }
+
+.book-desc {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 13px; font-style: italic;
+  line-height: 1.8; color: var(--mist);
+  margin-bottom: 36px;
+  transition: color 0.4s ease;
+}
+
+.book-cta {
+  display: inline-flex; align-items: center; gap: 10px;
+  font-family: 'Cinzel', serif;
+  font-size: 8px; letter-spacing: 3px;
+  color: var(--mist); text-transform: uppercase; font-weight: 300;
+  position: relative; padding-bottom: 5px;
+  transition: color 0.4s ease;
+}
+.book-cta::after {
+  content: '';
+  position: absolute; bottom: 0; left: 0;
+  height: 1px; width: 0;
+  background: var(--ink);
+  transition: width 0.4s ease, background 0.4s ease;
+}
+.book:hover .book-cta::after { width: 100%; }
+
+/* ── HOVER STATES ── */
+.book-piedra:hover { background: #1e1c18; }
+.book-piedra:hover .book-phantom { -webkit-text-stroke-color: rgba(255,255,255,0.05); }
+.book-piedra:hover .book-oblique { color: rgba(200,168,96,0.07); }
+.book-piedra:hover .book-num,
+.book-piedra:hover .book-title,
+.book-piedra:hover .book-desc,
+.book-piedra:hover .book-cta { color: rgba(240,232,212,0.88); }
+.book-piedra:hover .book-cta::after { background: #c8a870; }
+
+.book-carne:hover { background: #2a1014; }
+.book-carne:hover .book-phantom { -webkit-text-stroke-color: rgba(200,80,80,0.07); }
+.book-carne:hover .book-oblique { color: rgba(168,72,72,0.09); }
+.book-carne:hover .book-num,
+.book-carne:hover .book-title,
+.book-carne:hover .book-desc,
+.book-carne:hover .book-cta { color: rgba(248,238,234,0.88); }
+.book-carne:hover .book-cta::after { background: #cc5858; }
+
+.book-dios:hover { background: #e8f2f8; }
+.book-dios:hover .book-phantom { -webkit-text-stroke-color: rgba(74,138,170,0.12); }
+.book-dios:hover .book-oblique { color: rgba(74,138,170,0.08); }
+.book-dios:hover .book-num,
+.book-dios:hover .book-title,
+.book-dios:hover .book-desc,
+.book-dios:hover .book-cta { color: #1a3345; }
+.book-dios:hover .book-title { color: #4a8aaa; }
+.book-dios:hover .book-cta::after { background: #c9a84c; }
+
+/* ── FOOTER ── */
+.footer {
+  display: flex; align-items: center; justify-content: center;
+  padding: 0 48px; gap: 36px;
+  border-top: 1px solid var(--faint);
+  opacity: 0; animation: appear 0.8s ease 1.2s forwards;
+}
+.footer-link {
+  font-family: 'Cinzel', serif;
+  font-size: 8px; letter-spacing: 3px;
+  color: var(--mist); text-decoration: none; text-transform: uppercase; font-weight: 300;
+  transition: color 0.3s ease;
+}
+.footer-link:hover { color: var(--ink); }
+.footer-sep { width: 1px; height: 12px; background: var(--faint); }
+
+/* ── VERSO EFÍMERO ── */
+.verse-ephemeral {
+  position: fixed;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  pointer-events: none; z-index: 10;
+  opacity: 0;
+  animation: vfloat 3s ease 0.5s forwards;
+}
+.ve-text {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 13px; font-style: italic;
+  color: var(--mist); line-height: 2; letter-spacing: 0.3px;
+}
+.ve-ref {
+  font-family: 'Cinzel', serif;
+  font-size: 8px; letter-spacing: 3px;
+  color: var(--faint); margin-top: 10px; text-transform: uppercase;
+}
+
+@keyframes appear   { from {opacity:0} to {opacity:1} }
+@keyframes slideUp  { from {opacity:0;transform:translateY(20px)} to {opacity:1;transform:translateY(0)} }
+@keyframes vfloat   {
+  0%   {opacity:0}
+  20%  {opacity:0.7}
+  70%  {opacity:0.7}
+  100% {opacity:0}
+}
+
+@media (max-width: 800px) {
+  .stage { grid-template-columns: 1fr; grid-template-rows: auto 1px auto 1px auto; }
+  .divider { height: 1px; width: 100%; }
+  .book { padding: 48px 28px; min-height: 55vw; }
+  .book-oblique { font-size: clamp(60px, 16vw, 100px); bottom: 50%; }
+  .strip { padding: 0 24px; }
+  .footer { padding: 0 24px; gap: 20px; }
+  .verse-ephemeral { display: none; }
+}
+</style>
+<style>
+.site-nav {
+  display: flex; align-items: center; justify-content: center;
+  gap: 32px; padding: 14px 40px;
+  border-bottom: 1px solid rgba(201,168,76,0.15);
+  background: rgba(245,242,236,0.96);
+  backdrop-filter: blur(8px);
+  position: sticky; top: 0; z-index: 50;
+  flex-wrap: wrap;
+}
+.site-nav a {
+  font-family: 'Cinzel', serif; font-size: 9px; letter-spacing: 3px;
+  color: #b0a898; text-decoration: none; text-transform: uppercase;
+  font-weight: 300; transition: color 0.3s ease;
+  position: relative; padding-bottom: 3px;
+}
+.site-nav a::after {
+  content: ''; position: absolute; bottom: 0; left: 0;
+  width: 0; height: 1px; background: #c9a84c;
+  transition: width 0.3s ease;
+}
+.site-nav a:hover { color: #3a342a; }
+.site-nav a:hover::after { width: 100%; }
+.site-nav a.active { color: #c9a84c; }
+.site-nav-sep { width: 1px; height: 10px; background: rgba(201,168,76,0.2); }
+@media (max-width: 520px) { .site-nav { gap: 16px; padding: 12px 20px; } }
+</style>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="index.html">Mi meta</a>
+  <div class="site-nav-sep"></div>
+  <a href="diario_anamaria.html">Diario</a>
+  <div class="site-nav-sep"></div>
+  <a href="sanacion_quirurgica.html">Sanación</a>
+  <div class="site-nav-sep"></div>
+  <a href="trilogia.html" class="active">La trilogía</a>
+</nav>
+<div class="frame">
+
+  <header class="strip">
+    <div class="strip-left">Ana María · Trilogía</div>
+    <div class="strip-right">Un corazón que vuelve a Dios</div>
+  </header>
+
+  <main class="stage">
+
+    <!-- I · PIEDRA -->
+    <a class="book book-piedra" href="piedra.html">
+      <div class="book-phantom">I</div>
+      <div class="book-oblique">piedra</div>
+      <div class="book-content">
+        <div class="book-num">Libro I</div>
+        <h2 class="book-title">Un corazón<br><em>de piedra</em></h2>
+        <p class="book-desc">La dureza como escudo.<br>El antes. El muro.</p>
+        <span class="book-cta">Entrar →</span>
+      </div>
+    </a>
+
+    <div class="divider"></div>
+
+    <!-- II · CARNE -->
+    <a class="book book-carne" href="carne.html">
+      <div class="book-phantom">II</div>
+      <div class="book-oblique">carne</div>
+      <div class="book-content">
+        <div class="book-num">Libro II</div>
+        <h2 class="book-title">Un corazón<br><em>de carne</em></h2>
+        <p class="book-desc">La semilla que rompe.<br>El proceso que duele.</p>
+        <span class="book-cta">Entrar →</span>
+      </div>
+    </a>
+
+    <div class="divider"></div>
+
+    <!-- III · DIOS -->
+    <a class="book book-dios" href="dios.html">
+      <div class="book-phantom">III</div>
+      <div class="book-oblique">dios</div>
+      <div class="book-content">
+        <div class="book-num">Libro III</div>
+        <h2 class="book-title">Un corazón<br><em>para Dios</em></h2>
+        <p class="book-desc">El jardín después de la lluvia.<br>La mujer que Él vio.</p>
+        <span class="book-cta">Entrar →</span>
+      </div>
+    </a>
+
+  </main>
+
+  <footer class="footer">
+    <a class="footer-link" href="index.html">Mi meta</a>
+    <div class="footer-sep"></div>
+    <a class="footer-link" href="diario_anamaria.html">Diario</a>
+    <div class="footer-sep"></div>
+    <a class="footer-link" href="sanacion_quirurgica.html">Sanación</a>
+  </footer>
+
+</div>
+
+<div class="verse-ephemeral">
+  <div class="ve-text">"Quitaré de vuestra carne el corazón de piedra,<br>y os daré corazón de carne."</div>
+  <div class="ve-ref">Ezequiel 36 · 26</div>
+</div>
+
+</body>
+</html>
